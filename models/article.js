@@ -1,6 +1,7 @@
-/**
+/*
+/!**
  * Created by a on 1/18/17.
- */
+ *!/
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
@@ -14,9 +15,6 @@ var articleSchema = new Schema({
     comments: { type: [Number], default: [1] },
     reg_time: { type: Date, default: Date.now },
 });
-
-
-
-
 module.exports = mongoose.model('article', articleSchema);
 
+*/
