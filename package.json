@@ -15,6 +15,7 @@
     "mongoose": "^4.7.7",
     "promise": "^7.1.1",
     "redis": "^2.6.5",
-    "redis-promise": "^0.1.0"
+    "redis-promise": "^0.1.0",
+    "ug": "0.0.8"
   }
 }

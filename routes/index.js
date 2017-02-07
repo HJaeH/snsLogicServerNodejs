@@ -4,12 +4,13 @@
 var Promise = require('bluebird');
 
 
+
+
 module.exports = function(app, redisClient)
 {
     var User = require( '.././models/user');
     var Article = require('.././models/article');
     var ControllerHandler = require('.././controllers/controller.handler');
-
     // get all users
     app.get('/api/v1/users', function(req,res){ // url should start with '/'
         User.find(function(err, users){
@@ -61,17 +62,18 @@ module.exports = function(app, redisClient)
 
     //send friend recommendation list for each user
     app.get('/api/v1/users/:user_id/friends', function(req, res){
-        // var friendRecoList = ControllerHandler.getFriendReco(redisClient, User);
-        var b = req.params._id;
-        ControllerHandler.a(redisClient, b, function(temp, temp2) {
-            res.send(temp);
-            // console.log(temp2);
-        });
+        ControllerHandler.getFriendReco(redisClient, req.params.user_id)
+            .then(function(result){
+                res.send(result);
+            })
+
+        // res.end()
+
     });
 
     // set friend list into redis
     app.post('/api/v1/users/:user_id/friends', function(req, res){ // from django
-        ControllerHandler.createRecList(User, redisClient, function (err, result) {
+        ControllerHandler.setFriendReco(redisClient, User, function (err, result) {
             if(err)
                 console.error("Fails to create recommendation list")
 
@@ -89,7 +91,7 @@ module.exports = function(app, redisClient)
 
     // set newsfeed into redis
     app.post('/api/v1/users/:user_id/newsfeed', function(req, res){
-        ControllerHandler.setNewsfeed(redisClient, User);
+        ControllerHandler.setNewsfeed(redisClient, User, req.params.user_id);
         res.send("user newsfeeds list updated");
 
     });

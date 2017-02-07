@@ -1,7 +1,3 @@
-/**
- * Created by a on 1/13/17.
- */
-
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -16,9 +12,7 @@ var userSchema = new Schema({
     articles: [Number],
     image: { type: String, default: 'imageURL'}
 });
-
-
-
+/*
 var articleSchema = new Schema({
     user_id: String,
     contents: { type: String, default: "Content empty" },
@@ -33,7 +27,7 @@ var artureSchema = new Schema({
     title: String,
     image: String,
     followers: [],
-}) 
+}) */
 
 module.exports = mongoose.model('arture', artureSchema);
 module.exports = mongoose.model('article', articleSchema);
