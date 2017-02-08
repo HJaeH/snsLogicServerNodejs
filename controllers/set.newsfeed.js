@@ -1,11 +1,13 @@
 var Mongoose = require('mongoose');
 var ObjectId = Mongoose.Types.ObjectId;
 var Promise = require('bluebird');
+var RedisClient = require('../app').redisClient;
 //먼저 한 유저선택후 갸의 친구들 받고나서 그 친구들글 전체의 아티클 전체
 // 걔의 팔로우를 받아서 아티클 전체를 조회후 팔로우 한 글 중 특정조건 만족하는 글
 // 걔가 올린 모든 글 시간순서
+// todo : pulling 조건 추가
 
-var setNewsfeed = function(RedisClient, User, user_id){
+var setNewsfeed = function(User, user_id){
     // console.log(User)
 
     User.aggregate([ // friend's articles
@@ -46,7 +48,7 @@ var setNewsfeed = function(RedisClient, User, user_id){
     ]).then(function(results){
         RedisClient.select(2);
         Promise.map(results, function(result){
-            // console.log(result)
+            console.log(result)
             RedisClient.saddAsync(user_id, result.friendArticleIds.article_list.toString())
         });
     });

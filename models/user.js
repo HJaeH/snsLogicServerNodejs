@@ -29,7 +29,7 @@ var artureSchema = new Schema({
     followers: [],
 }) */
 
-module.exports = mongoose.model('arture', artureSchema);
-module.exports = mongoose.model('article', articleSchema);
+// module.exports = mongoose.model('arture', artureSchema);
+// module.exports = mongoose.model('article', articleSchema);
 module.exports = mongoose.model('user', userSchema);
 

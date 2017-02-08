@@ -1,6 +1,5 @@
 var Promise = require("bluebird");
-var mongoose = require('mongoose');
-var ObjectId = mongoose.Types.ObjectId;
+var redisClient = require('../app').redisClient;
 
 var getUserObjectById = function(id, userFriends){
     var i ;
@@ -36,7 +35,7 @@ var areFriendsEachOther = function (id1, id2, userFriends) { // get the object I
 }
 
 
-var setFriendReco = function(redisClient, User){
+var setFriendReco = function(User){
     redisClient.flushall(); // update all redis data by flushing
     User.aggregate([
         {
