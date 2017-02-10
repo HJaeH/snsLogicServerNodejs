@@ -13,13 +13,16 @@ var setArtureReco = function(Arture){
     Arture.find()
         .then(function(artures){
             Promise.map(artures, function(arture, index) {
-                console.log("arture");
+                Graph.createNode('node', {id : arture._id.toString()});
+                return new Promise(function(resolved, rejected){
+                    resolved(arture)
+                })
+            }).then(function(result){
+
             })
+
         });
 
 }
-
-
-
 
 exports.setArtureReco = setArtureReco;

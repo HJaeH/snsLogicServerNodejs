@@ -22,10 +22,4 @@ config.redis.host = 'localhost'; // local redis
 // config.redis.host = '192.168.1.208'; // remote redis
 config.redis.port = 6379;
 
-//
-
-
-
-
-
 module.exports = config;
