@@ -18,7 +18,7 @@ var setArtureGraph = function(){
             })
         }).map(function(eachArture) { // send eachArture and async control at the same time
 
-            Promise.map(eachArture.direct_relation, function(eachDirectRelation){
+            Promise.map(eachArture.related_arture_list, function(eachDirectRelation){
                 var temp1 = graph.createEdge('artureEdge').link(
                     graph.find(eachArture._id.toString(), 'artureNode'),
                     graph.find(eachDirectRelation.toString(), 'artureNode')
@@ -38,7 +38,7 @@ var setArtureGraph = function(){
                     resolved(eachUser);
                 })
             }).map(function(eachUser){
-                return Promise.map(eachUser._doc.follows, function(eachFollow){
+                return Promise.map(eachUser._doc.arture_list, function(eachFollow){
                     var temp2 = graph.createEdge('userEdge').link(
                         graph.find(eachUser._doc._id.toString()),
                         graph.find(eachFollow.toString())

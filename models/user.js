@@ -1,36 +1,47 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
-
 var userSchema = new Schema({
     // user_id: String,
-    email
+    name: String,
+    email : String,
+    pwd: String,
+    gender: Boolean,
+    birth: String,
+    address: String,
+    registered_time: { type: Date, default: Date.now },
+    pic: { type: String, default: 'imageURL'},
+    friend_list : [{type: mongoose.Schema.ObjectId}],
+    friend_request_list : [{type: mongoose.Schema.ObjectId}],
+    article_list: [{type: mongoose.Schema.ObjectId}],
+    arture_list: [{type: mongoose.Schema.ObjectId}],
+
+});
+/*
+
+name = models.CharField(max_length=30)
+email = models.EmailField(max_length=30)
+pwd = models.CharField(max_length=30)
+gender = models.BooleanField()
+birth = models.CharField(max_length=8, null=True)
+address = models.TextField(null=True)
+registered_time = models.DateTimeField(auto_now_add=True)
+pic = models.ImageField(null=True, upload_to=content_file_name, default='profile_pictures/default_picture/default.png')
+friend_list = ListField()
+friend_request_list = ListField(EmbeddedModelField('Request'), null=True)
+arture_list = ListField() # insert arture ObjectId
+article_list = ListField() # insert article ObjectId
+
+*/
+
+/*
+email : String,
     name: String,
     friends:[Number],
     gender: Boolean,
     age: Number,
     registered_date: { type: Date, default: Date.now },
-    articles: [Number],
-    image: { type: String, default: 'imageURL'}
-});
-/*
-var articleSchema = new Schema({
-    user_id: String,
-    contents: { type: String, default: "Content empty" },
-    tag: { type : [], default: "IU" },
-    image: { type: String, default: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT_sT3J6WYIzUcchaGDc9h_sSeIRCSeLEAcV4mRA3VHulwwFcJtLQ"},
-    comments: { type: [Number], default: [1] },
-    reg_time: { type: Date, default: Date.now },
-});
+articles: [Number],
+    image: { type: String, default: 'imageURL'}*/
 
-
-var artureSchema = new Schema({
-    title: String,
-    image: String,
-    followers: [],
-}) */
-
-// module.exports = mongoose.model('arture', artureSchema);
-// module.exports = mongoose.model('article', articleSchema);
-module.exports = mongoose.model('user', userSchema);
-
+// module.exports = mongoose.model('users_user', userSchema);
+module.exports = mongoose.model('users_user', userSchema, 'users_user');

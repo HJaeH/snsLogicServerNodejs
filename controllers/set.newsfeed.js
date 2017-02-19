@@ -25,12 +25,12 @@ var setNewsfeed = function(user_id){
              }
          },
          {
-           $unwind: "$friends"
+           $unwind: "$friend_list"
          },
          {
              $lookup: {
-                 from: "users",
-                 localField: "friends",
+                 from: "users_user",
+                 localField: "friend_list",
                  foreignField: "_id",
                  as: "friendArticleIds",
              }
@@ -67,12 +67,12 @@ var setNewsfeed = function(user_id){
             }
         },
         {
-          $unwind: "$follows"
+          $unwind: "$arture_list"
         },
         {
             $lookup: {
-                from: "articles",
-                localField: "follows",
+                from: "article_list",
+                localField: "arture_list",
                 foreignField: "tag",
                 as: "followArticles"
             }
@@ -89,7 +89,6 @@ var setNewsfeed = function(user_id){
         console.log("tag articles");
         RedisClient.select(2);
         Promise.map(results, function(result){
-            // console.log(result.followArticles._id + " ------ ");
             RedisClient.saddAsync(user_id, result.followArticles._id.toString())
         });
 
@@ -108,13 +107,10 @@ var setNewsfeed = function(user_id){
 
         }
     ]).then(function(userArticlesList){
-        // console.log(userArticlesList);
         Promise.map(userArticlesList, function(userArticle){
             console.log("my articles");
             Promise.map(userArticle.article_list, function(article){
-                // console.log(article.toString() + " ~~~~~");
                 RedisClient.saddAsync(user_id, article.toString());
-                // RedisClient.saddAsync(user_id, result.friendArticleIds.article_list.toString())
             });
         });
     });

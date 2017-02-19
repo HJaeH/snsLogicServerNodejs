@@ -3,13 +3,13 @@ var dijkstra = require('../util/dijkstra/dijkstra');
 module.exports = function(app, graph)
 {
 
-
     // var User = require( '../models/user');
     // var Article = require('../models/article');
     // var Arture = require('../models/arture');
     var modelHandler = require('../models/model.handler');
     var ControllerHandler = require('../controllers/controller.handler');
     var User = modelHandler.userModel;
+    // console.log(User, "sdasdfdfsd")
 
     //set all response headers
     app.get('/*',function(req, res, next){
@@ -17,7 +17,7 @@ module.exports = function(app, graph)
         next();
     });
 
-    // set friend list into redis
+    // set friend recommendation list into redis
     app.post('/api/v1/users/:user_id/friends', function(req, res){ // from django
         ControllerHandler.setFriendReco(User, function (err) { // todo: apply mmodel handler
             if(err)

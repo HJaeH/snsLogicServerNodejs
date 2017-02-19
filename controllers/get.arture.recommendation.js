@@ -11,6 +11,7 @@ var dijkstra = require('../util/dijkstra/dijkstra');
 
 
 module.exports.getArtureRecommendation = function(userId, graph){
+    console.log(userId);
     return User.aggregate(
         {
             $match: {
@@ -19,12 +20,12 @@ module.exports.getArtureRecommendation = function(userId, graph){
         },
         {
             $project: {
-                follows: 1,
+                arture_list: 1,
                 _id: 0
             }
         },
         {
-            $unwind: "$follows"
+            $unwind: "$arture_list"
         },
         {
             $sample: {

@@ -22,6 +22,7 @@ var graph = new Graph();
 mongoose.Promise = global.Promise;
 
 
+
 //redis promisfy// todo : 패키지 메소드 연결문제
 var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
@@ -32,7 +33,8 @@ ControllerHandler.createGraph(graph); // create initial graph based on mongo
 
 
 // Mongo DB
-mongoose.connect(config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+console.log(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
 // var db = mongoose.connection;
 
 

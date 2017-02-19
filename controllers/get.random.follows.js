@@ -19,12 +19,12 @@ module.exports.getRandomFollows = function(userId, graph){
         },
         {
             $project: {
-                follows: 1,
+                arture_list: 1,
                 _id: 0
             }
         },
         {
-            $unwind: "$follows"
+            $unwind: "$arture_list"
         },
         {
             $sample: {

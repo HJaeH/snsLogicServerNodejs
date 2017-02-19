@@ -11,7 +11,7 @@ module.exports.graphAddFollow = function(graph, userId, followId){
     User.findOne({_id:userId}, function(){
 
     }).then(function(targetUser){
-        var follows = targetUser._doc.follows;
+        var follows = targetUser._doc.arture_list;
         console.log(follows);
         follows.forEach(function(eachFollow){
             if(eachFollow.toString() != followId.toString()){
