@@ -1,21 +1,117 @@
-/**
- * Created by a on 2/6/17.
- */
-class Node{
-    constructor(node_id){
-        this.node_id = node_id;
-        this.edges = [];
-    }
+'use strict'
+var bodyParser = require('body-parser');
+const Node = require('./unit/node');
+const Edge = require('./unit/edge');
 
-    unlink(){
-        let edges = this.edges;
-        for(let i = 0, len = edges.length; i < len; i++ ){
+module.exports = (function(){
+    class Graph {
+        constructor(){
+            this.nodeIndex = new Set();
+            this._edges = [];
+            this._nodes = [];
         }
-    }
-}
 
-class Edge {
-    constructor(){
+        createNode(type, index){
+            if(this.nodeIndex.has(index)){
+                console.error("Index collision: index already exist in node list")
+                return false
+            }
+            let node = new Node(type, index);
+            this._nodes.push(node);
+            this.nodeIndex.add(index);
+            return node;
+        }
+
+        createEdge(type){
+            var edge = new Edge(type);
+            this._edges.push(edge);
+            return edge;
+        }
+        getNodes(nodeType){
+            var arr = [];
+            if(!nodeType)
+                return this._nodes;
+            else{
+                for(let eachNode of this._nodes){
+                    if(eachNode.getType().toString() == nodeType.toString()){
+                        arr.push(eachNode);
+                    }
+                }
+                return arr;
+
+            }
+        }
+        getEdges(edgeType){
+            var arr = [];
+            if(!edgeType)
+                return this._edges;
+            else{
+                for(let eachEdge of this._edges){
+                    if(eachEdge.type.toString() === edgeType.toString()){
+                        // console.log(eachEdge)
+                        arr.push(eachEdge);
+                    }
+                }
+                // console.log(arr,'---------------');
+                return arr;
+            }
+        }
+
+        find(index, nodeType){
+            let arr = [];
+            // console.log(index,"accepted")
+            if(!this.nodeIndex.has(index)) {
+                // console.log(index,"and false")
+                return false;
+            }
+            else {
+                if(nodeType){
+                    this._nodes.forEach(function(eachNode){
+                        if(eachNode.type == nodeType)
+                            arr.push(eachNode)
+                    });
+                    for (let node of arr) {
+                        if (node.index == index){
+                            // console.log(index,"and ", node.index)
+                            return node;
+                        }
+                    }
+                }
+                else {
+                    for (let node of this._nodes) {
+                        if (node.index == index){
+                            // console.log(index,"and ", node.index)
+                            return node;
+                        }
+                    }
+                }
+            }
+        }
+
+        getMinNodeNotVisit(path){
+            let min = Infinity;
+            let result = null;
+            let flag = true;
+            for (var eachPath in path) {
+                if(!path[eachPath].visit){
+                    if(path[eachPath].dist != Infinity) {
+                        if (min > path[eachPath].dist) {
+                            min = path[eachPath].dist;
+                            result = this.find(eachPath);
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+
+
+
 
     }
-}
+    return Graph;
+})();
+
+
+

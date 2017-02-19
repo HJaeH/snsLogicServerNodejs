@@ -6,8 +6,9 @@ var RedisClient = require('../app').RedisClient;
 // 걔의 팔로우를 받아서 아티클 전체를 조회후 팔로우 한 글 중 특정조건 만족하는 글
 // 걔가 올린 모든 글 시간순서
 // todo : pulling 조건 추가
+var User = require('../models/model.handler').userModel;
 
-var setNewsfeed = function(User, user_id){
+var setNewsfeed = function(user_id){
 
     // friend's articles
     RedisClient.select(2);

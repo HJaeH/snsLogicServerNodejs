@@ -2,6 +2,7 @@
  * Created by a on 2/8/17.
  */
 var RedisClient = require('../app').RedisClient;
+
 module.exports.redisEvent = function() {
     RedisClient.on('connect', function () { // port 6379
         console.log("Redis is connected");

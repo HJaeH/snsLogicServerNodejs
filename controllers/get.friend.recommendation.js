@@ -1,16 +1,5 @@
 var Promise = require('bluebird');
 var RedisClient = require('../app').RedisClient;
-/*
-RedisClient.on('connect', function () { // port 6379
-    console.log("Redis is connected");
-});
-RedisClient.on('ready', function () {
-    console.log("Redis is ready");
-});
-
-RedisClient.on('error', function () {
-    console.log("Error in Redis");
-});*/
 var getFriendReco = function(user_id){
     RedisClient.select(1);// Not sure this works in async manner
     return RedisClient.zrangeAsync(user_id, 0, -1) // return promise result to api
@@ -18,9 +7,6 @@ var getFriendReco = function(user_id){
             return Promise.map(friendList, function (eachUser, index, length) { // promise map parameter 기억하자
                 var friendReco = {};
                 RedisClient.select(0);
-                /*var temp = Number(eachUser);
-                if(isNaN(temp)) {*/
-                    // console.log(eachUser);
                     return new Promise(function(resolved, rejected){
                         RedisClient.hgetallAsync(eachUser) // eachUser var is just string, so need to get user redis object from db0
                             .then(function(result){
