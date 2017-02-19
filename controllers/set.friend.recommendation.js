@@ -1,8 +1,8 @@
 var RedisClient = require('../app').RedisClient;
 
 //todo : 친구가 된 두 유저의 친구들 까지만 레디스를 업데이트
-
-
+console.log(RedisClient);
+console.log("ASdfsadfasdfsadf")
 var getUserObjectById = function(id, userFriends){
     var i ;
     for(i = 0  ; i < userFriends.length; i++) {

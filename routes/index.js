@@ -59,17 +59,17 @@ module.exports = function(app, graph)
         console.log(graph);
         res.send('Signed up user add to graph');
     });
-
+    // follow relation add to graph
     app.get('/api/v1/users/:user_id/follow/:arture_id', function(req, res){
         ControllerHandler.graphAddFollow(graph, req.params.user_id, req.params.arture_id);
         res.send("Graph updated");
     });
-
+    // arture recommendation
     app.get('/api/v1/users/:user_id/arture_reco', function(req, res){
-        ControllerHandler.getRandomFollows(req.params.user_id, graph);
-        // var recoNodes = dijkstra(graph, )
-        // console.log(recoNodes);
-        res.send('ㅁㄴㅇㄹㄴㅁㅇㄹ');
+        ControllerHandler.getArtureRecommendation(req.params.user_id, graph, function(){
+        }).then(function(result){
+            res.send(result);
+        })
     });
 
 

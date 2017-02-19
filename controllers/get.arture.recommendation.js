@@ -10,8 +10,8 @@ var ObjectId = mongoose.Types.ObjectId;
 var dijkstra = require('../util/dijkstra/dijkstra');
 
 
-module.exports.getRandomFollows = function(userId, graph){
-    User.aggregate(
+module.exports.getArtureRecommendation = function(userId, graph){
+    return User.aggregate(
         {
             $match: {
                 _id: new ObjectId(userId)
@@ -40,14 +40,19 @@ module.exports.getRandomFollows = function(userId, graph){
         // console.log(arr)
         var recoArtures = dijkstra(graph, arr)
 
-        Arture.find({
+        return Arture.find({
             _id: {
                 $in: recoArtures
             }
         }).then(function(result){
-            console.log(result)
+            return new Promise(function(resolved, rejected){
+                resolved(result);
+            })
         })
 
         // console.log(dijkstra(graph, arr));
     })
+
+
+
 }

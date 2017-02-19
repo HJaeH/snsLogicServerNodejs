@@ -10,4 +10,4 @@ exports.createGraph1 = require('./arture.recommendation/createGraph').createGrap
 exports.setArtureReco = require('./arture.recommendation/set.arture.recommendation.js').setArtureReco;
 
 exports.graphAddFollow = require('./graph.add.follow').graphAddFollow;
-exports.getRandomFollows = require('./get.random.follows').getRandomFollows;
+exports.getArtureRecommendation = require('./get.arture.recommendation').getArtureRecommendation;

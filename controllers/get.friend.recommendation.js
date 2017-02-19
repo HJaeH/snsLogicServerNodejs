@@ -1,5 +1,6 @@
 var Promise = require('bluebird');
 var RedisClient = require('../app').RedisClient;
+console.log(RedisClient);
 var getFriendReco = function(user_id){
     RedisClient.select(1);// Not sure this works in async manner
     return RedisClient.zrangeAsync(user_id, 0, -1) // return promise result to api
