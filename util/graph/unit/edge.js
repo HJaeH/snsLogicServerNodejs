@@ -11,7 +11,9 @@ module.exports = (function() {
             this.firstNode = null;
             this.secondNode = null;
         }
-
+        setExplicitDistance(dist){
+            this.distance = dist;
+        }
         setDistance() {
             if(this.directRelation)
                 this.distance = 1/this.shareUserNum+1;//(1/(this.shareUserNum*2));

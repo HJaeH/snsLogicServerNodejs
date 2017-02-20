@@ -1,3 +1,4 @@
+/*
 var Graph = require('../util/graph/graph');
 var dijkstra = require('../util/dijkstra/dijkstra');
 var Promise = require('bluebird');
@@ -66,4 +67,4 @@ var setArtureGraph = function(){
 exports.setArtureGraph = setArtureGraph;
 // TODO : 추천, 뉴스피드 코드 전부다 하나의 그래프에서 추출하도록 통합, 테스트 스크립트랑 서버상태 추적, 레디스 몽고 노드 서버 죽는상황
 //한 유저에게 추천할 때에 해당 유저로부터 특정 기준에따라 몇개의 노드를 선택하고 노드들을 대표하는 하나의 노드를 생성,  연결된 간선만 새로 이어주고
-// 최소 찾음
+// 최소 찾음*/

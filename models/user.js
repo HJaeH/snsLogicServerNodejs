@@ -44,4 +44,4 @@ articles: [Number],
     image: { type: String, default: 'imageURL'}*/
 
 // module.exports = mongoose.model('users_user', userSchema);
-module.exports = mongoose.model('users_user', userSchema, 'users_user');
+module.exports = mongoose.model('user', userSchema);

@@ -17,7 +17,6 @@
     "promise": "^7.1.1",
     "queue": "^4.2.1",
     "redis": "^2.6.5",
-    "redis-promise": "^0.1.0",
-    "ug": "0.0.8"
+    "redis-promise": "^0.1.0"
   }
 }

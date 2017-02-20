@@ -1,6 +1,7 @@
-/**
+/*
+/!**
  * Created by Jaehwa on 2/18/17.
- */
+ *!/
 'use strict'
 var mongoose = require('mongoose')
 var modelHandler = require('../models/model.handler');
@@ -50,4 +51,4 @@ module.exports.getRandomFollows = function(userId, graph){
 
         // console.log(dijkstra(graph, arr));
     })
-}
+}*/

@@ -12,7 +12,7 @@ var artureSchema = new Schema({
 
 }) ;
 
-module.exports = mongoose.model('users_arture', artureSchema, 'users_arture');
+module.exports = mongoose.model('arture', artureSchema);
 /*
 
 title = models.CharField(max_length=30)

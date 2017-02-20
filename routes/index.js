@@ -1,16 +1,7 @@
-var dijkstra = require('../util/dijkstra/dijkstra');
 
 module.exports = function(app, graph)
 {
-
-    // var User = require( '../models/user');
-    // var Article = require('../models/article');
-    // var Arture = require('../models/arture');
-    var modelHandler = require('../models/model.handler');
     var ControllerHandler = require('../controllers/controller.handler');
-    var User = modelHandler.userModel;
-    // console.log(User, "sdasdfdfsd")
-
     //set all response headers
     app.get('/*',function(req, res, next){
         res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,7 +10,7 @@ module.exports = function(app, graph)
 
     // set friend recommendation list into redis
     app.post('/api/v1/users/:user_id/friends', function(req, res){ // from django
-        ControllerHandler.setFriendReco(User, function (err) { // todo: apply mmodel handler
+        ControllerHandler.setFriendReco(req.params.user_id, graph, function (err) { // todo: apply mmodel handler
             if(err)
                 console.error("Fails to create recommendation list");
         });
@@ -28,7 +19,8 @@ module.exports = function(app, graph)
 
     //get friend recommendation list of each user
     app.get('/api/v1/users/:user_id/friends', function(req, res){
-        ControllerHandler.getFriendReco( req.params.user_id).then(function(result){
+
+        ControllerHandler.getFriendReco( req.params.user_id , req.query.cnt).then(function(result){
             res.send(result);
         });
     });
@@ -64,8 +56,10 @@ module.exports = function(app, graph)
         ControllerHandler.graphAddFollow(graph, req.params.user_id, req.params.arture_id);
         res.send("Graph updated");
     });
+
     // arture recommendation
     app.get('/api/v1/users/:user_id/arture_reco', function(req, res){
+        // ControllerHandler.createGraph(graph); // create initial graph based on mongo
         ControllerHandler.getArtureRecommendation(req.params.user_id, graph, function(){
         }).then(function(result){
             res.send(result);
@@ -74,3 +68,4 @@ module.exports = function(app, graph)
 
 
 }
+// todo: 친구관계 갱신 시 요청 받는거

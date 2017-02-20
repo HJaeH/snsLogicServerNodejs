@@ -16,12 +16,12 @@ var setNewsfeed = function(user_id){
      User.aggregate([
          {
            $match: {
-               _id: (new ObjectId(user_id))
+               _id: (new ObjectId(user_id.toString()))
            }
          },
          {
              $project: {
-                 friends: true
+                 friend_list: true
              }
          },
          {
@@ -29,7 +29,7 @@ var setNewsfeed = function(user_id){
          },
          {
              $lookup: {
-                 from: "users_user",
+                 from: "users",//from: "users_user",
                  localField: "friend_list",
                  foreignField: "_id",
                  as: "friendArticleIds",
@@ -47,8 +47,8 @@ var setNewsfeed = function(user_id){
              $unwind:"$friendArticleIds.article_list"
          }
      ]).then(function(results){
-         // console.log(results)
-         RedisClient.select(2);
+         console.log(results)
+         // RedisClient.select(2);
          Promise.map(results, function(result){
              // console.log(result.friendArticleIds.article_list)
              RedisClient.saddAsync(user_id, result.friendArticleIds.article_list.toString())
@@ -63,7 +63,7 @@ var setNewsfeed = function(user_id){
         },
         {
             $project: {
-                follows: true
+                arture_list: true
             }
         },
         {
@@ -71,7 +71,7 @@ var setNewsfeed = function(user_id){
         },
         {
             $lookup: {
-                from: "article_list",
+                from: "articles", // from: "users_article",
                 localField: "arture_list",
                 foreignField: "tag",
                 as: "followArticles"
@@ -87,7 +87,8 @@ var setNewsfeed = function(user_id){
         }
     ]).then( function(results){
         console.log("tag articles");
-        RedisClient.select(2);
+        console.log(results);
+        // RedisClient.select(2);
         Promise.map(results, function(result){
             RedisClient.saddAsync(user_id, result.followArticles._id.toString())
         });
@@ -109,6 +110,7 @@ var setNewsfeed = function(user_id){
     ]).then(function(userArticlesList){
         Promise.map(userArticlesList, function(userArticle){
             console.log("my articles");
+            console.log(userArticlesList);
             Promise.map(userArticle.article_list, function(article){
                 RedisClient.saddAsync(user_id, article.toString());
             });

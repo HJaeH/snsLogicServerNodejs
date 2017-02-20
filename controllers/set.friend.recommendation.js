@@ -1,107 +1,103 @@
 var RedisClient = require('../app').RedisClient;
+var modelHandler = require('../models/model.handler');
+var mongoose = require('mongoose');
+var ObjectId = mongoose.Types.ObjectId;
+var User = modelHandler.userModel;
+var Promise = require('bluebird')
+var dijkstra = require('../util/dijkstra/dijkstra');
 
-//todo : 친구가 된 두 유저의 친구들 까지만 레디스를 업데이트
-var getUserObjectById = function (id, userFriends) {
-    var i;
-    for (i = 0; i < userFriends.length; i++) {
+var setFriendReco = function(userId, graph){
 
-        if (id == userFriends[i]._id.toString()) {
-            return userFriends[i];
-        } // return object id
-
-    }
-    return false; // fails to find user object from db
-};
-
-var areFriendsEachOther = function (id1, id2, userFriends) { // get the object Ids
-
-    userFriends.forEach(function(eachUser1){
-        if(eachUser1._id === id1){
-            eachUser1.friend_list.forEach(function(eachFriends){
-                if(eachFriends._id === eachUser1._id){
-                    return true;
-                }
-            });
-        }
-    });
-    userFriends.forEach(function(eachUser2){
-        if(eachUser2._id === id2){
-            eachUser2.friend_list.forEach(function(eachFriends){
-                if(eachFriends._id === id1){
-                    return true;
-                }
-            })
-        }
-    });
-    return false; //only the case where it fails to find
-
-}
-
-
-var setFriendReco = function(User){
-    RedisClient.flushall(); // update all redis data by flushing
     User.aggregate([
+        {
+            $match:{
+                _id: new ObjectId(userId)
+            }
+        },
         {
             $project: {
                 name: true,
-                pic: true
+                pic: true,
+                friend_list: true
             }
         }]
-    ).then(function(redisUsers){// redis users include only image, name, id.
-        // console.log(redisUsers);
-        for(var i = 0; i < redisUsers.length; i++){
-            RedisClient.select(0);
-            RedisClient.hmset(redisUsers[i]._id.toString(), 'name', redisUsers[i].name, 'image', redisUsers[i].pic);
-        }
-    });
-
-
-    User.aggregate([
-            {
-                $match:
-                {
-
-                }
-            },
-            {
-                $project: {
-                    name: true,
-                    friend_list: true
-                }
-            }]
-        )
-        .then(function(userFriends) {
-            RedisClient.select(1);
-            for(var i = 0; i < userFriends.length; i++) {
-                for (var j = 0; j < userFriends[i].friend_list.length; j++) { // 친구 리스트 아이디를 받고
-                    var eachFriend = getUserObjectById(userFriends[i].friend_list[j], userFriends);
-                    if (eachFriend) {
-                        for (var k = 0; k < eachFriend.friend_list.length; k++) {
-                            if (userFriends[i]._id != eachFriend.friend_list[k]) { // not itself
-                                if(!areFriendsEachOther(userFriends[i]._id.toString(), eachFriend.friend_list[k], userFriends)){ // and not friends right now //
-                                    // console.log(userFriends[i]._id.toString(), eachFriend.friend_list[k], userFriends , "----------------")
-                                    if( eachFriend.friend_list[k].toString() == "58a84086355efaa205705489" && userFriends[i]._id.toString() == "58a84086355efaa20570548d")
-                                    {
-                                        console.log("found!!")
-                                    }
-                                    if( eachFriend.friend_list[k].toString() == "58a84086355efaa20570548d" && userFriends[i]._id.toString() == "58a84086355efaa205705489")
-                                    {
-                                        console.log("found2!!")
-                                    }
-                                    RedisClient.ZADD(userFriends[i]._id.toString(), "incr", 1, eachFriend.friend_list[k].toString(), function (err, data) { // then add
-                                        if(err) console.log('redis adding to sorted list error')
-
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
-        .then(function(){
-
+    ).then(function(targetUser) {// redis users include only image, name, id.
+        RedisClient.select(0);
+        RedisClient.del(userId.toString());
+        RedisClient.hmset(targetUser[0]._id.toString(), 'name', targetUser[0].name, 'image', targetUser[0].pic);
+        return new Promise(function (resolved, rejected) {
+            resolved(targetUser[0]);
         });
+    }).then(function(targetUser){
+        console.log(targetUser);
+        var arr= [];
+        arr.push(targetUser._id.toString());
+        targetUser.friend_list.forEach(function(eachFriend){
+            arr.push(eachFriend);
+        })
+
+        var recoFriends = dijkstra(graph, arr, 'userNode', 'userEdge');
+        console.log(recoFriends)
+        RedisClient.select(1);
+
+
+
+
+        /*RedisClient.ZADD(userFriends[i]._id.toString(), "incr", 1, eachFriend.friend_list[k].toString(), function (err, data) {
+
+        }); // then add*/
+    })
+
 };
 
 exports.setFriendReco = setFriendReco;
+
+
+/////////
+/*
+return User.aggregate(
+    {
+        $match: {
+            _id: new ObjectId(userId)
+        },
+    },
+    {
+        $project: {
+            arture_list: 1,
+            _id: 0
+        }
+    },
+    {
+        $unwind: "$arture_list"
+    },
+    {
+        $sample: {
+            size: 5
+        }
+    }
+).then(function(result){
+    console.log(result)
+
+    var arr = []
+    for(let eachArtureId of result){
+        arr.push(eachArtureId.arture_list.toString());
+
+    }
+    console.log(arr)
+    var recoArtures = dijkstra(graph, arr);
+    // console.log(recoArtures);
+    return Arture.find({
+        _id: {
+            $in: recoArtures
+        }
+    }).then(function(result){
+        return new Promise(function(resolved, rejected){
+            resolved(result);
+        })
+    })
+*/
+
+    // console.log(dijkstra(graph, arr));
+// })
+
+

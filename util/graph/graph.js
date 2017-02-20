@@ -13,7 +13,7 @@ module.exports = (function(){
 
         createNode(type, index){
             if(this.nodeIndex.has(index)){
-                console.error("Index collision: index already exist in node list")
+                console.error("Index collision: index already exist in node list", type)
                 return false
             }
             let node = new Node(type, index);
@@ -88,7 +88,7 @@ module.exports = (function(){
             }
         }
 
-        getMinNodeNotVisit(path){
+        getMinNodeNotVisit(path, nodeType){
             let min = Infinity;
             let result = null;
             let flag = true;
@@ -97,7 +97,7 @@ module.exports = (function(){
                     if(path[eachPath].dist != Infinity) {
                         if (min > path[eachPath].dist) {
                             min = path[eachPath].dist;
-                            result = this.find(eachPath);
+                            result = this.find(eachPath, nodeType);
                         }
                     }
                 }

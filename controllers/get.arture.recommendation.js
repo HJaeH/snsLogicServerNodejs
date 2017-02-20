@@ -11,7 +11,6 @@ var dijkstra = require('../util/dijkstra/dijkstra');
 
 
 module.exports.getArtureRecommendation = function(userId, graph){
-    console.log(userId);
     return User.aggregate(
         {
             $match: {
@@ -33,17 +32,18 @@ module.exports.getArtureRecommendation = function(userId, graph){
             }
         }
     ).then(function(result){
+        console.log(result)
 
         var arr = []
         for(let eachArtureId of result){
-            arr.push(eachArtureId.follows.toString());
-        }
-        // console.log(arr)
-        var recoArtures = dijkstra(graph, arr)
+            arr.push(eachArtureId.arture_list.toString());
 
-        return Arture.find({
+        }
+        console.log(arr)
+        var recoArtures = dijkstra(graph, arr, 'artureNode', 'artureEdge'); // get reco list
+        return Arture.find({ // get objects by id
             _id: {
-                $in: recoArtures
+                $in: recoArtures // find multiple matches
             }
         }).then(function(result){
             return new Promise(function(resolved, rejected){

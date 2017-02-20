@@ -20,7 +20,7 @@ var ControllerHandler = require('./controllers/controller.handler');
 var app = express();
 var graph = new Graph();
 mongoose.Promise = global.Promise;
-
+console.log(ControllerHandler.createGraph(graph)); // create initial graph based on mongo
 
 
 //redis promisfy// todo : 패키지 메소드 연결문제
@@ -28,20 +28,16 @@ var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
 // dijkstra(graph,'58a7d67bdb534c1729fbe105');
 
-ControllerHandler.createGraph(graph); // create initial graph based on mongo
-
-
 
 // Mongo DB
-console.log(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
-mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
-// var db = mongoose.connection;
+// console.log(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+// mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+mongoose.connect('mongodb://localhost:27017/arture')
 
 
 // configure app to use body body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 // router configure
 router(app, graph);
 

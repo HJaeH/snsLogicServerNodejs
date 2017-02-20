@@ -1,19 +1,21 @@
 /**
  * Created by Jaehwa on 2/17/17.
  */
+
+'use strict'
 // var Graph = require('../../util/graph/graph');
 var dijkstra = require('../../util/dijkstra/dijkstra');
 var Promise = require('bluebird');
 var modelHandeler = require('../../models/model.handler');
-var bfs = require('../../util/bfs/bfs');
 
 var User = modelHandeler.userModel;
 var Arture = modelHandeler.artureModel;
+// console.log(User);
 var getShareUserNum = function(arture1, arture2){
     var count = 0;
-    arture1.followers.forEach(function(eachFollower1){
+    arture1.user_list.forEach(function(eachFollower1){
         // console.log(eachFollower1);
-        arture2.followers.forEach(function(eachFollower2){
+        arture2.user_list.forEach(function(eachFollower2){
             if(eachFollower1.toString() === eachFollower2.toString()){
                 count++;
             }
@@ -24,7 +26,7 @@ var getShareUserNum = function(arture1, arture2){
 }
 var isDirectRelation = function(arture1, arture2){
     var flag = false;
-    arture1.direct_relation.forEach(function(eachDirectRelation1){
+    arture1.related_arture_list.forEach(function(eachDirectRelation1){
         if(eachDirectRelation1.toString() === arture2._id.toString()){
             // console.log('In true branch')
             flag = true;
@@ -36,6 +38,8 @@ var isDirectRelation = function(arture1, arture2){
 }
 
 var createGraph = function(graph){
+
+
     Arture.find(function(){
     }).then(function(artures){
         Promise.map(artures, function(eachArture) {
@@ -58,11 +62,40 @@ var createGraph = function(graph){
                 }
             });
         }).then(function(){
-            // bfs(graph,'58a7d67bdb534c1729fbe105')
+            User.find(function(){
+            }).then(function(users){
+                Promise.map(users, function(eachUser){
+                    graph.createNode('userNode', eachUser._id.toString()); // create all user node by id
+                    return new Promise(function(resolved, rejected){
+                        resolved(eachUser);
+                    });
+                }).map(function(eachUser){
+                    Promise.map(eachUser.friend_list, function(eachFriend){
+
+
+                        let firstNode = graph.find(eachUser._id.toString(), 'userNode');
+                        let secondNode = graph.find(eachFriend.toString(), 'userNode');
+                        if(!firstNode.edgeExist(secondNode)){
+                            var userEdge = graph.createEdge('userEdge').link(
+                                graph.find(eachUser._id.toString(), 'userNode'),
+                                graph.find(eachFriend.toString(), 'userNode')
+                            )
+                            if(userEdge){
+                                userEdge.setExplicitDistance(1);
+                            }
+                        }
+                        else {
+                            console.warn("Index collision: index already exist in node list")
+
+                        }
+                    })
+                }).then(function(){
+
+                    // console.log(graph);
+                })
+            });
         });
     });
 };
 exports.createGraph = createGraph;
 // TODO : 추천, 뉴스피드 코드 전부다 하나의 그래프에서 추출하도록 통합, 테스트 스크립트랑 서버상태 추적, 레디스 몽고 노드 서버 죽는상황
-//한 유저에게 추천할 때에 해당 유저로부터 특정 기준에따라 몇개의 노드를 선택하고 노드들을 대표하는 하나의 노드를 생성,  연결된 간선만 새로 이어주고
-// 최소 찾음
