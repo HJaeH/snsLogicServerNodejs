@@ -19,6 +19,7 @@ var initRedis = function() {
             }
         }]
     ).then(function (redisUsers) {// redis users include only image, name, id.
+        // console.log(redisUsers, "-------")
         for (var i = 0; i < redisUsers.length; i++) {
             RedisClient.select(0);
             RedisClient.hmset(redisUsers[i]._id.toString(), 'name', redisUsers[i].name, 'image', redisUsers[i].pic);

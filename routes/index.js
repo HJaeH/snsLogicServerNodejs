@@ -7,29 +7,26 @@ module.exports = function(app, graph)
         res.setHeader('Access-Control-Allow-Origin', '*');
         next();
     });
-//todo: 레디스 없이 보내기 친구추천
+
     // set friend recommendation list into redis // 친구관계 업데이트
-    app.post('/api/v1/users/:user_id/friends', function(req, res){ // from django
-        console.log("tlqkf")
-        ControllerHandler.setFriendReco(req.params.user_id,20,graph, function (err) { // todo: apply mmodel handler
+    app.post('/api/v1/users/:user_id/add_friend/:friend_id', function(req, res){ // from django
+        ControllerHandler.setFriendReco(req.params.user_id, 20, graph, function (err) {
+            if(err)
+                console.error("Fails to create recommendation list");
+        });
+        ControllerHandler.setFriendReco(req.params.friend_id, 20, graph, function (err) {
             if(err)
                 console.error("Fails to create recommendation list");
         });
         res.send("Friends recommendation list updated");
     });
 
-    //get friend recommendation list of each user
-    app.get('/api/v1/users/:user_id/friends?cnt', function(req, res){
-        ControllerHandler.getFriendReco( req.params.user_id , req.query.cnt).then(function(result){
+    app.get('/api/v1/users/:user_id/friends', function(req, res){
+        ControllerHandler.getFriendReco( req.params.user_id ,10).then(function(result){
             res.send(result);
         });
     });
 
-    // set initial newsfeed into redis
-    app.post('/api/v1/users/:user_id/newsfeed', function(req, res){
-        ControllerHandler.initNewsfeed(req.params.user_id);
-        res.send("user newsfeeds list updated");
-    });
 
     //get newsfeed of a user
     app.get('/api/v1/users/:user_id/newsfeed', function(req, res){

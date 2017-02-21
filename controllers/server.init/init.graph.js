@@ -42,6 +42,7 @@ var i = 0, j=0 ;
 var initGraph = function(graph){
     Arture.find(function(){
     }).then(function(artures){
+        // console.log(artures,'123123123', Arture);
         Promise.map(artures, function(eachArture) {
             console.log(artures.length)
             graph.createNode('artureNode', eachArture._id.toString()); // create all arture node by id
@@ -49,18 +50,13 @@ var initGraph = function(graph){
                 resolved(eachArture);
             });
         }).map(function(eachArture1){
-            // console.log( i++, j)
             Promise.map(artures, function(eachArture2){
-                // console.log(eachArture1, eachArture2)
-                if(j%100000 == 0)
-                    console.log(j)
-                j++;
                 if(eachArture1._id.toString() != eachArture2._id.toString()){
+                    // console.log(i++)
                     var artureEdge = graph.createEdge('artureEdge').link( // create edge between every arture
                         graph.find(eachArture1._id.toString(), 'artureNode'),
                         graph.find(eachArture2._id.toString(), 'artureNode')
                     )
-
                     if(artureEdge){
                         var temp = isDirectRelation(eachArture1,eachArture2);
                         artureEdge.setProperty(getShareUserNum(eachArture1, eachArture2),temp);
@@ -76,9 +72,12 @@ var initGraph = function(graph){
                         resolved(eachUser);
                     });
                 }).map(function(eachUser){
+                    // console.log(eachUser)
                     Promise.map(eachUser.friend_list, function(eachFriend){
+                        console.log(graph.find(eachFriend, 'userNode'),"-----");
                         let firstNode = graph.find(eachUser._id.toString(), 'userNode');
                         let secondNode = graph.find(eachFriend.toString(), 'userNode');
+                        console.log(secondNode.index, firstNode.index);
                         if(!firstNode.edgeExist(secondNode)){
                             var userEdge = graph.createEdge('userEdge').link(firstNode, secondNode)
                             if(userEdge){
@@ -100,10 +99,12 @@ var initGraph = function(graph){
                     Promise.map(eachUser.arture_list, function(eachFollow){
                         let firstNode = graph.find(eachUser._id.toString(), 'userNode');
                         let secondNode = graph.find(eachFollow.toString(), 'artureNode');
+                        // console.log(firstNode, secondNode);
                         if(!firstNode.edgeExist(secondNode)){
+
                             var userEdge = graph.createEdge('userArture').link(firstNode, secondNode)
                             if(userEdge){
-                                userEdge.setExplicitDistance(1.5);
+                                userEdge.setExplicitDistance(0.5);
                             }
                             else {
                                 console.warn('Can not find node in graph',__filename);
@@ -115,8 +116,7 @@ var initGraph = function(graph){
                         }
                     })
                 }).then(function(){
-                 // console.log(graph);
-                    console.log("hi")
+                     console.log("Graph initiated ");
                 })
             });
         });
@@ -124,4 +124,3 @@ var initGraph = function(graph){
 
 };
 exports.initGraph = initGraph;
-// TODO : 추천, 뉴스피드 코드 전부다 하나의 그래프에서 추출하도록 통합, 테스트 스크립트랑 서버상태 추적, 레디스 몽고 노드 서버 죽는상황

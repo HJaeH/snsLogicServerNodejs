@@ -42,7 +42,7 @@ module.exports = function(graph, sources, maxNumTofind, nodeType, edgeType){
             }
 
             if(result.length >= maxNumTofind) {
-                // console.log(path,'---------1111--');
+                console.log(path,'---------1111--');
                 // console.log(result);
                 return result;
             }
@@ -69,7 +69,7 @@ module.exports = function(graph, sources, maxNumTofind, nodeType, edgeType){
         }
     }
 
-    // console.log(path,'---------1111--');
+    console.log(path,'---------1111--');
     // console.log(result);
     return result;
 };

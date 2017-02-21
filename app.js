@@ -1,5 +1,4 @@
 "use strict"; // todo: add config file port, db pw ~~ & redis, db 등 관리, 경로에서 ./ 필요한지, conne
-                // todo : redis fail시 해결 코드
 delete process.env["DEBUG_FD"]; //for `DEBUG_FD` is deprecated. Override `debug.log` error
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -19,19 +18,18 @@ var app = express();
 var graph = new Graph();
 mongoose.Promise = global.Promise;
 ControllerHandler.initRedis();
-var temp = ControllerHandler.initGraph(graph); // create initial graph based on mongo
+ControllerHandler.initGraph(graph); // create initial graph based on mongo
 
 
 //redis promisfy//
 var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
 
-console.log(temp);
 
 // Mongo DB
-mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+// mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
 // mongoose.connect('mongodb://localhost:27017/arture')
-
+mongoose.connect(config.mongodb.url);
 
 // configure app to use body body-parser
 app.use(bodyParser.urlencoded({ extended: true }));

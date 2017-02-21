@@ -16,8 +16,10 @@ config.mongodb.password = 'sgay123';
 config.mongodb.protocol = 'mongodb://'
 // config.mongodb.host = 'localhost'; // local DB
 config.mongodb.host = '192.168.1.209'; // remote DB
+// config.mongodb.host = '192.168.1.208'; // remote DB
 config.mongodb.port = 27017;
 config.mongodb.db = 'arture';
+config.mongodb.url = config.mongodb.protocol+ config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db
 
 
 

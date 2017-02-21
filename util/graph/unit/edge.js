@@ -10,15 +10,16 @@ module.exports = (function() {
             this.shareUserNum = 0;
             this.firstNode = null;
             this.secondNode = null;
+            // this.followSum = 0;
         }
         setExplicitDistance(dist){
             this.distance = dist;
         }
         setDistance() {
             if(this.directRelation)
-                this.distance = 1/this.shareUserNum+1;//(1/(this.shareUserNum*2));
+                this.distance = 1/(this.shareUserNum+1);//(1/(this.shareUserNum*2));
             else
-                this.distance = 2/this.shareUserNum+1;//(1/(this.shareUserNum));
+                this.distance = 2/(this.shareUserNum+1);//(1/(this.shareUserNum));
         }
         getDistance(){
             return this.distance;
@@ -40,7 +41,7 @@ module.exports = (function() {
             }
             this.firstNode = firstNode;
             this.secondNode = secondNode;
-            firstNode.addEdge(this)
+            firstNode.addEdge(this);
             secondNode.addEdge(this);
             return this;
         }
