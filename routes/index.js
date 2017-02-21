@@ -1,3 +1,5 @@
+'use strict'
+
 var ControllerHandler = require('../controllers/controller.handler');
 
 module.exports = function(app, graph)
@@ -8,18 +10,34 @@ module.exports = function(app, graph)
         next();
     });
 
-    // set friend recommendation list into redis // 친구관계 업데이트
-    app.post('/api/v1/users/:user_id/add_friend/:friend_id', function(req, res){ // from django
+    //
+    app.get('/api/v1/users/:user_id/add_friend/:friend_id', function(req, res){ // from django
+        let firstNode = graph.find(req.params.user_id, 'userNode');
+        let secondNode = graph.find(req.params.friend_id, 'userNode');
+        if(!firstNode.edgeExist(secondNode)){
+            var userEdge = graph.createEdge('userEdge').link(firstNode, secondNode)
+            if(userEdge){
+                userEdge.setExplicitDistance(1);
+            }
+            else{
+                console.warn('Can not find node in graph',__filename);
+            }
+        }
+
+        res.send("Friends recommendation list updated");
+    });
+
+// set friend recommendation list of a user into redis //
+    app.post('/api/v1/users/:user_id/friend', function(req, res){ // from django
         ControllerHandler.setFriendReco(req.params.user_id, 20, graph, function (err) {
             if(err)
                 console.error("Fails to create recommendation list");
         });
-        ControllerHandler.setFriendReco(req.params.friend_id, 20, graph, function (err) {
-            if(err)
-                console.error("Fails to create recommendation list");
-        });
+
         res.send("Friends recommendation list updated");
     });
+
+
 
     app.get('/api/v1/users/:user_id/friends', function(req, res){
         ControllerHandler.getFriendReco( req.params.user_id ,10).then(function(result){

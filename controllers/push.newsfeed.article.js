@@ -11,8 +11,10 @@ var dijkstra = require('../util/dijkstra/dijkstra');
 
 var pushNewsfeedArticle = function(userId, articleId, tagId, graph){
     var userNode = graph.find(userId.toString(), 'userNode');
-    console.log(userNode)
+    // console.log(userNode)
+    // console.log(tagId.toString(), "a--------")
     var tagNode  = graph.find(tagId.toString(), 'artureNode');
+    // console.log(tagNode)
     if(!userNode){
         console.error("User ID is not in graph",__filename);
     }
