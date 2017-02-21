@@ -11,7 +11,8 @@ var articleSchema = new Schema({
     is_more_comment: { type: Boolean, default: false },
 });
 
-module.exports = mongoose.model('article', articleSchema);
+// module.exports = mongoose.model('article', articleSchema);
+module.exports = mongoose.model('users_article', articleSchema, 'users_article');
 
 
 

@@ -22,15 +22,15 @@ ControllerHandler.initRedis();
 ControllerHandler.initGraph(graph); // create initial graph based on mongo
 
 
-//redis promisfy// todo : 패키지 메소드 연결문제
+//redis promisfy//
 var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
 
 
 // Mongo DB
 // console.log(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
-// mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
-mongoose.connect('mongodb://localhost:27017/arture')
+mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
+// mongoose.connect('mongodb://localhost:27017/arture')
 
 
 // configure app to use body body-parser

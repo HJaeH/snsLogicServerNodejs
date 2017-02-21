@@ -28,7 +28,7 @@ var initNewsfeed = function(user_id){
          },
          {
              $lookup: {
-                 from: "users",//from: "users_user",
+                 from: "users_user",// from: "user",//from: "users_user",
                  localField: "friend_list",
                  foreignField: "_id",
                  as: "friendArticleIds",
@@ -70,7 +70,7 @@ var initNewsfeed = function(user_id){
         },
         {
             $lookup: {
-                from: "articles", // from: "users_article",
+                from: "users_article",//from: "articles", // from: "users_article",
                 localField: "arture_list",
                 foreignField: "tag",
                 as: "followArticles"
