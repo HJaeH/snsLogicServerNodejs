@@ -1,6 +1,7 @@
 var Promise = require('bluebird');
 var RedisClient = require('../app').RedisClient;
 var getFriendReco = function(user_id, maxCount){
+    console.log(user_id);
     if(!maxCount)
         maxCount = 10;
     RedisClient.select(1);// Not sure this works in async manner

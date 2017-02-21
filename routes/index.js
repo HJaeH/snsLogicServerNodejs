@@ -10,6 +10,7 @@ module.exports = function(app, graph)
 //todo: 레디스 없이 보내기 친구추천
     // set friend recommendation list into redis // 친구관계 업데이트
     app.post('/api/v1/users/:user_id/friends', function(req, res){ // from django
+        console.log("tlqkf")
         ControllerHandler.setFriendReco(req.params.user_id,20,graph, function (err) { // todo: apply mmodel handler
             if(err)
                 console.error("Fails to create recommendation list");

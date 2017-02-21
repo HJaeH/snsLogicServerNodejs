@@ -17,6 +17,7 @@ var Arture = modelHandeler.artureModel;
 
 var getShareUserNum = function(arture1, arture2){
     var count = 0;
+    if((arture1.user_list && arture2.user_list) )
     arture1.user_list.forEach(function(eachFollower1){
         arture2.user_list.forEach(function(eachFollower2){
             if(eachFollower1.toString() === eachFollower2.toString()){
@@ -37,17 +38,23 @@ var isDirectRelation = function(arture1, arture2){
     if(flag) return true;
     else return false;
 }
-
+var i = 0, j=0 ;
 var initGraph = function(graph){
     Arture.find(function(){
     }).then(function(artures){
         Promise.map(artures, function(eachArture) {
+            console.log(artures.length)
             graph.createNode('artureNode', eachArture._id.toString()); // create all arture node by id
             return new Promise(function(resolved, rejected){
                 resolved(eachArture);
             });
         }).map(function(eachArture1){
+            // console.log( i++, j)
             Promise.map(artures, function(eachArture2){
+                // console.log(eachArture1, eachArture2)
+                if(j%100000 == 0)
+                    console.log(j)
+                j++;
                 if(eachArture1._id.toString() != eachArture2._id.toString()){
                     var artureEdge = graph.createEdge('artureEdge').link( // create edge between every arture
                         graph.find(eachArture1._id.toString(), 'artureNode'),
@@ -107,12 +114,14 @@ var initGraph = function(graph){
 
                         }
                     })
-                })/*.then(function(){
-                 console.log(graph);
-                 })*/
+                }).then(function(){
+                 // console.log(graph);
+                    console.log("hi")
+                })
             });
         });
     });
+
 };
 exports.initGraph = initGraph;
 // TODO : 추천, 뉴스피드 코드 전부다 하나의 그래프에서 추출하도록 통합, 테스트 스크립트랑 서버상태 추적, 레디스 몽고 노드 서버 죽는상황

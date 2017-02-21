@@ -19,16 +19,16 @@ var app = express();
 var graph = new Graph();
 mongoose.Promise = global.Promise;
 ControllerHandler.initRedis();
-ControllerHandler.initGraph(graph); // create initial graph based on mongo
+var temp = ControllerHandler.initGraph(graph); // create initial graph based on mongo
 
 
 //redis promisfy//
 var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
 
+console.log(temp);
 
 // Mongo DB
-// console.log(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
 mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
 // mongoose.connect('mongodb://localhost:27017/arture')
 

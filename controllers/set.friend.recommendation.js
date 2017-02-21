@@ -9,6 +9,7 @@ var Promise = require('bluebird')
 var dijkstra = require('../util/dijkstra/dijkstra');
 
 var setFriendReco = function(userId, maxNumToFind, graph){
+    console.log(userId, maxNumToFind);
 
     User.aggregate([
         {
@@ -24,6 +25,7 @@ var setFriendReco = function(userId, maxNumToFind, graph){
             }
         }]
     ).then(function(targetUser) {// redis users include only image, name, id.
+        console.log(targetUser)
         RedisClient.select(0);
         RedisClient.del(userId.toString());
         RedisClient.hmset(targetUser[0]._id.toString(), 'name', targetUser[0].name, 'image', targetUser[0].pic);
