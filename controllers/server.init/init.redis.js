@@ -19,7 +19,6 @@ var initRedis = function() {
             }
         }]
     ).then(function (redisUsers) {// redis users include only image, name, id.
-        // console.log(redisUsers, "-------")
         for (var i = 0; i < redisUsers.length; i++) {
             RedisClient.select(0);
             RedisClient.hmset(redisUsers[i]._id.toString(), 'name', redisUsers[i].name, 'image', redisUsers[i].pic);
@@ -31,11 +30,6 @@ var initRedis = function() {
         for(let eachUser of redisUsers){
             controllerHandler.initNewsfeed(eachUser._id.toString());
         }
-
-        /*Promise.map(redisUsers[0], function(eachUser){
-            console.log(eachUser)
-            controllerHandler.initNewsfeed(eachUser._id.toString());
-        })*/
     })
 
 

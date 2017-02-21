@@ -42,9 +42,7 @@ var i = 0, j=0 ;
 var initGraph = function(graph){
     Arture.find(function(){
     }).then(function(artures){
-        // console.log(artures,'123123123', Arture);
         Promise.map(artures, function(eachArture) {
-            console.log(artures.length)
             graph.createNode('artureNode', eachArture._id.toString()); // create all arture node by id
             return new Promise(function(resolved, rejected){
                 resolved(eachArture);
@@ -74,10 +72,8 @@ var initGraph = function(graph){
                 }).map(function(eachUser){
                     // console.log(eachUser)
                     Promise.map(eachUser.friend_list, function(eachFriend){
-                        console.log(graph.find(eachFriend, 'userNode'),"-----");
                         let firstNode = graph.find(eachUser._id.toString(), 'userNode');
                         let secondNode = graph.find(eachFriend.toString(), 'userNode');
-                        console.log(secondNode.index, firstNode.index);
                         if(!firstNode.edgeExist(secondNode)){
                             var userEdge = graph.createEdge('userEdge').link(firstNode, secondNode)
                             if(userEdge){
@@ -99,7 +95,6 @@ var initGraph = function(graph){
                     Promise.map(eachUser.arture_list, function(eachFollow){
                         let firstNode = graph.find(eachUser._id.toString(), 'userNode');
                         let secondNode = graph.find(eachFollow.toString(), 'artureNode');
-                        // console.log(firstNode, secondNode);
                         if(!firstNode.edgeExist(secondNode)){
 
                             var userEdge = graph.createEdge('userArture').link(firstNode, secondNode)

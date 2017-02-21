@@ -39,18 +39,21 @@ module.exports = function(app, graph)
     //Distribute an article to close users of graph
     app.get('/api/v1/users/:user_id/create_article/:article_id/tag/:tag_id', function(req, res){///:article_id/tag/:tag_id
         ControllerHandler.pushNewsfeedArticle(req.params.user_id, req.params.article_id, req.params.tag_id, graph);
+        console.log(req.params.article_id," is created");
         res.send("Article added to users selectively");
     });
 
-    //add a signed up user to graph
+    //add a signed up user to graph from django
     app.get('/api/v1/users/:user_id/sign_up', function(req, res){
         graph.createNode('artureNode', req.params.user_id);
+        console.log(req.params.user_id,"is added ");
         res.send('Signed up user add to graph');
     });
 
     //  add follow relation to graph
     app.get('/api/v1/users/:user_id/follow/:arture_id', function(req, res){
         ControllerHandler.graphAddFollow(graph, req.params.user_id, req.params.arture_id);
+        console.log(req.params.user_id,"is following",req.params.arture_id);
         res.send("Graph updated");
     });
 
