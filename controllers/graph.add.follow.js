@@ -17,7 +17,7 @@ module.exports.graphAddFollow = function(graph, userId, followId){
             if(eachFollow.toString() != followId.toString()){
                 var followNode = graph.find(eachFollow.toString(), 'artureNode');
                 if(followNode){
-                    console.log(followNode.getEdges(),'-----------')
+                    // console.log(followNode.getEdges(),'-----------')
                     followNode.getEdges().forEach(function(eachEdge){
                         eachEdge.incShareUserNum();
                     })

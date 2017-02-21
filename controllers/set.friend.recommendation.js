@@ -1,3 +1,5 @@
+'use strict'
+
 var RedisClient = require('../app').RedisClient;
 var modelHandler = require('../models/model.handler');
 var mongoose = require('mongoose');
@@ -6,7 +8,7 @@ var User = modelHandler.userModel;
 var Promise = require('bluebird')
 var dijkstra = require('../util/dijkstra/dijkstra');
 
-var setFriendReco = function(userId, graph){
+var setFriendReco = function(userId, maxNumToFind, graph){
 
     User.aggregate([
         {
@@ -25,79 +27,23 @@ var setFriendReco = function(userId, graph){
         RedisClient.select(0);
         RedisClient.del(userId.toString());
         RedisClient.hmset(targetUser[0]._id.toString(), 'name', targetUser[0].name, 'image', targetUser[0].pic);
-        return new Promise(function (resolved, rejected) {
+        return new Promise(function (resolved){
             resolved(targetUser[0]);
         });
     }).then(function(targetUser){
-        console.log(targetUser);
-        var arr= [];
-        arr.push(targetUser._id.toString());
-        targetUser.friend_list.forEach(function(eachFriend){
-            arr.push(eachFriend);
-        })
-
-        var recoFriends = dijkstra(graph, arr, 'userNode', 'userEdge');
-        console.log(recoFriends)
+        var recoFriends = dijkstra(graph, [targetUser._id.toString()], maxNumToFind,'userNode', 'userEdge');
         RedisClient.select(1);
+        console.log(recoFriends.length)
 
 
-
-
-        /*RedisClient.ZADD(userFriends[i]._id.toString(), "incr", 1, eachFriend.friend_list[k].toString(), function (err, data) {
-
-        }); // then add*/
+        for(let eachRecoUser of recoFriends){
+            console.log(eachRecoUser);
+            RedisClient.ZADD(userId.toString(), "incr", 1, eachRecoUser.toString(), function (err, data) {
+            }); // then add
+        }
     })
 
 };
 
 exports.setFriendReco = setFriendReco;
-
-
-/////////
-/*
-return User.aggregate(
-    {
-        $match: {
-            _id: new ObjectId(userId)
-        },
-    },
-    {
-        $project: {
-            arture_list: 1,
-            _id: 0
-        }
-    },
-    {
-        $unwind: "$arture_list"
-    },
-    {
-        $sample: {
-            size: 5
-        }
-    }
-).then(function(result){
-    console.log(result)
-
-    var arr = []
-    for(let eachArtureId of result){
-        arr.push(eachArtureId.arture_list.toString());
-
-    }
-    console.log(arr)
-    var recoArtures = dijkstra(graph, arr);
-    // console.log(recoArtures);
-    return Arture.find({
-        _id: {
-            $in: recoArtures
-        }
-    }).then(function(result){
-        return new Promise(function(resolved, rejected){
-            resolved(result);
-        })
-    })
-*/
-
-    // console.log(dijkstra(graph, arr));
-// })
-
 

@@ -1,20 +1,23 @@
 /**
+ * Created by Jaehwa on 2/21/17.
+ */
+/**
  * Created by Jaehwa on 2/17/17.
  */
 
 'use strict'
-// var Graph = require('../../util/graph/graph');
 var dijkstra = require('../../util/dijkstra/dijkstra');
 var Promise = require('bluebird');
-var modelHandeler = require('../../models/model.handler');
-
+var modelHandeler = require('../../models/model.handler.js');
 var User = modelHandeler.userModel;
 var Arture = modelHandeler.artureModel;
-// console.log(User);
+
+
+
+
 var getShareUserNum = function(arture1, arture2){
     var count = 0;
     arture1.user_list.forEach(function(eachFollower1){
-        // console.log(eachFollower1);
         arture2.user_list.forEach(function(eachFollower2){
             if(eachFollower1.toString() === eachFollower2.toString()){
                 count++;
@@ -28,18 +31,14 @@ var isDirectRelation = function(arture1, arture2){
     var flag = false;
     arture1.related_arture_list.forEach(function(eachDirectRelation1){
         if(eachDirectRelation1.toString() === arture2._id.toString()){
-            // console.log('In true branch')
             flag = true;
-            // return true;
         }
     })
     if(flag) return true;
     else return false;
 }
 
-var createGraph = function(graph){
-
-
+var initGraph = function(graph){
     Arture.find(function(){
     }).then(function(artures){
         Promise.map(artures, function(eachArture) {
@@ -50,7 +49,7 @@ var createGraph = function(graph){
         }).map(function(eachArture1){
             Promise.map(artures, function(eachArture2){
                 if(eachArture1._id.toString() != eachArture2._id.toString()){
-                    var artureEdge = graph.createEdge('artureEdge').link(
+                    var artureEdge = graph.createEdge('artureEdge').link( // create edge between every arture
                         graph.find(eachArture1._id.toString(), 'artureNode'),
                         graph.find(eachArture2._id.toString(), 'artureNode')
                     )
@@ -71,31 +70,49 @@ var createGraph = function(graph){
                     });
                 }).map(function(eachUser){
                     Promise.map(eachUser.friend_list, function(eachFriend){
-
-
                         let firstNode = graph.find(eachUser._id.toString(), 'userNode');
                         let secondNode = graph.find(eachFriend.toString(), 'userNode');
                         if(!firstNode.edgeExist(secondNode)){
-                            var userEdge = graph.createEdge('userEdge').link(
-                                graph.find(eachUser._id.toString(), 'userNode'),
-                                graph.find(eachFriend.toString(), 'userNode')
-                            )
+                            var userEdge = graph.createEdge('userEdge').link(firstNode, secondNode)
                             if(userEdge){
                                 userEdge.setExplicitDistance(1);
                             }
+                            else{
+                                console.warn('Can not find node in graph',__filename);
+                            }
                         }
                         else {
-                            console.warn("Index collision: index already exist in node list")
+                            // console.warn("Index collision: index already exist in node list",__filename)
+
+                        }
+                    });
+                    return new Promise(function(resolved, rejected){
+                        resolved(eachUser);
+                    });
+                }).map(function(eachUser){
+                    Promise.map(eachUser.arture_list, function(eachFollow){
+                        let firstNode = graph.find(eachUser._id.toString(), 'userNode');
+                        let secondNode = graph.find(eachFollow.toString(), 'artureNode');
+                        if(!firstNode.edgeExist(secondNode)){
+                            var userEdge = graph.createEdge('userArture').link(firstNode, secondNode)
+                            if(userEdge){
+                                userEdge.setExplicitDistance(1.5);
+                            }
+                            else {
+                                console.warn('Can not find node in graph',__filename);
+                            }
+                        }
+                        else {
+                            // console.warn("Index collision while creating edge: index already exist in node list")
 
                         }
                     })
-                }).then(function(){
-
-                    // console.log(graph);
-                })
+                })/*.then(function(){
+                 console.log(graph);
+                 })*/
             });
         });
     });
 };
-exports.createGraph = createGraph;
+exports.initGraph = initGraph;
 // TODO : 추천, 뉴스피드 코드 전부다 하나의 그래프에서 추출하도록 통합, 테스트 스크립트랑 서버상태 추적, 레디스 몽고 노드 서버 죽는상황

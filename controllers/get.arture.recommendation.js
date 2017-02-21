@@ -40,7 +40,8 @@ module.exports.getArtureRecommendation = function(userId, graph){
 
         }
         console.log(arr)
-        var recoArtures = dijkstra(graph, arr, 'artureNode', 'artureEdge'); // get reco list
+        var recoArtures = dijkstra(graph, arr, 5,'artureNode', 'artureEdge'); // get reco list
+        console.log(recoArtures,"sadfsd")
         return Arture.find({ // get objects by id
             _id: {
                 $in: recoArtures // find multiple matches

@@ -7,26 +7,24 @@ var Promise = require('bluebird');
 var mongoose = require('mongoose');
 var config = require('./config/config');
 var Redis = require('redis');
-
+module.exports.RedisClient = Promise.promisifyAll(Redis.createClient(config.redis.port, config.redis.host))
 var router = require('./routes');
 var debug = require('debug')('app');
 var Graph = require('./util/graph/graph');
 var dijkstra = require('./util/dijkstra/dijkstra');
-module.exports.RedisClient = Promise.promisifyAll(Redis.createClient(config.redis.port, config.redis.host))
 var ControllerHandler = require('./controllers/controller.handler');
 
-// console.log(RedisClient);
 
 var app = express();
 var graph = new Graph();
 mongoose.Promise = global.Promise;
-console.log(ControllerHandler.createGraph(graph)); // create initial graph based on mongo
+ControllerHandler.initRedis();
+ControllerHandler.initGraph(graph); // create initial graph based on mongo
 
 
 //redis promisfy// todo : 패키지 메소드 연결문제
 var eventConnection = require('./events/redis.event');
 eventConnection.redisEvent();
-// dijkstra(graph,'58a7d67bdb534c1729fbe105');
 
 
 // Mongo DB

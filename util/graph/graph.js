@@ -91,7 +91,6 @@ module.exports = (function(){
         getMinNodeNotVisit(path, nodeType){
             let min = Infinity;
             let result = null;
-            let flag = true;
             for (var eachPath in path) {
                 if(!path[eachPath].visit){
                     if(path[eachPath].dist != Infinity) {
