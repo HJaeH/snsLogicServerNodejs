@@ -28,8 +28,8 @@ eventConnection.redisEvent();
 
 // Mongo DB
 // mongoose.connect(config.mongodb.protocol+config.mongodb.id+':'+config.mongodb.password+'@' + config.mongodb.host+':'+ config.mongodb.port +'/'+config.mongodb.db);
-mongoose.connect('mongodb://localhost:27017/arture')
-// mongoose.connect(config.mongodb.url);
+// mongoose.connect('mongodb://localhost:27017/arture')
+mongoose.connect(config.mongodb.url);
 
 // configure app to use body body-parser
 app.use(bodyParser.urlencoded({ extended: true }));
